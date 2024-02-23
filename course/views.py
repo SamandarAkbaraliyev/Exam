@@ -9,19 +9,6 @@ from django.db.models.functions import Coalesce
 from django.contrib.auth.models import User
 
 
-class LessonUserCreateAPIView(generics.CreateAPIView):
-    queryset = models.LessonUser.objects.all()
-    serializer_class = serializers.LessonUserCreateSerializer
-
-    def create(self, request, *args, **kwargs):
-        user = self.request.user
-        lesson_id = self.kwargs.get('lesson_id')
-        lesson = models.Lesson.objects.get(id=lesson_id)
-        lesson_user = models.LessonUser.objects.create(user=user, lesson=lesson)
-        data = serializers.LessonUserCreateSerializer(lesson_user)
-        return Response({'data': data})
-
-
 class CourseListAPIView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     queryset = models.Course.objects.all()
