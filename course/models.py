@@ -29,6 +29,7 @@ class Lesson(BaseModel):
     video = models.FileField(upload_to='lessons/')
     order = models.PositiveIntegerField(default=0)
     total_time = models.PositiveIntegerField(default=0, blank=True)
+    views = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -37,9 +38,9 @@ class Lesson(BaseModel):
 class LessonUser(BaseModel):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='lesson_user')
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name='lesson_user')
-    has_access = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
     watched_time = models.PositiveIntegerField(default=0)
+    last_viewed = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.user}\' {self.lesson}'
@@ -58,3 +59,5 @@ def calculate_video_length(sender, instance, created, **kwargs):
         video = VideoFileClip(instance.video.path)
         instance.total_time = video.duration
         instance.save()
+
+
